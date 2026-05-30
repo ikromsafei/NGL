@@ -1,5 +1,40 @@
+import requests
 from django.shortcuts import render, get_object_or_404
 from .models import PesanAnonim
+
+# ================= KONFIGURASI NOTIFIKASI WA =================
+FONNTE_TOKEN = "CCKiY61XUCuiYwu5ssd4" 
+NOMOR_WA_ANDA = "088274262106" 
+# =============================================================
+
+def kirim_notifikasi_wa(isi_pesan, sumber, nama):
+    url = "https://api.fonnte.com/send"
+    
+    # Format susunan teks chat rahasia yang masuk ke WA Anda
+    teks_notif = (
+        f"🔔 *ADA PESAN ANONIM BARU!* 🔔\n\n"
+        f"💬 *Isi Pesan:* \"{isi_pesan}\"\n"
+        f"🔗 *Sumber Link:* {sumber}\n"
+        f"👤 *Nama Terdeteksi:* {nama}\n\n"
+        f"Silakan cek detail lengkapnya di halaman Inbox aplikasi Anda! 🚀"
+    )
+    
+    payload = {
+        'target': NOMOR_WA_ANDA,
+        'message': teks_notif,
+        'countryCode': '62',
+    }
+    
+    headers = {
+        'Authorization': FONNTE_TOKEN
+    }
+    
+    try:
+        response = requests.post(url, data=payload, headers=headers)
+        return response.json()
+    except Exception as e:
+        print(f"Gagal mengirim notifikasi WA: {e}")
+        return None
 
 def dapatkan_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -12,7 +47,6 @@ def dapatkan_ip(request):
 # 1. Halaman utama tempat orang kirim pesan anonim
 def kirim_pesan_view(request):
     status_sukses = False
-    # Ambil parameter nama dari link jika ada (misal: ?nama=Wahyu)
     nama_terdeteksi = request.GET.get('nama', 'Anonim')
     
     if request.method == 'POST':
@@ -32,7 +66,6 @@ def kirim_pesan_view(request):
             elif 'tiktok.com' in referer:
                 sumber = 'TikTok'
             
-            # Jika di link ada manual param ?sumber=ig
             param_sumber = request.GET.get('sumber')
             if param_sumber:
                 sumber = param_sumber.upper()
@@ -44,11 +77,15 @@ def kirim_pesan_view(request):
                 asal_link=sumber,
                 nama_pelacak=nama_terdeteksi
             )
+            
+            # Memicu fungsi kirim pesan WA sesaat setelah tombol kirim diklik
+            kirim_notifikasi_wa(isi, sumber, nama_terdeteksi)
+            
             status_sukses = True
             
     return render(request, 'pesan/index.html', {'sukses': status_sukses})
 
-# 2. Halaman Kotak Masuk (Inbox Berupa Amplop)
+# 2. Halaman Kotak Masuk (Inbox Berupa List Amplop)
 def inbox_view(request):
     semua_pesan = PesanAnonim.objects.all().order_by('-waktu_dikirim')
     return render(request, 'pesan/inbox.html', {'semua_pesan': semua_pesan})
