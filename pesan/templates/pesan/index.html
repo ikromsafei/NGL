@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGL - Kirim Pesan</title>
+    <style>
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: linear-gradient(180deg, #FF2D55 0%, #FF9500 100%); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { width: 100%; max-width: 400px; padding: 20px; text-align: center; }
+        .card { background: white; border-radius: 30px; padding: 30px 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .avatar { width: 70px; height: 70px; background: #f2f2f7; border-radius: 50%; margin: -65px auto 10px auto; border: 5px solid white; font-size: 30px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .username { font-weight: bold; color: #666; font-size: 14px; }
+        .prompt { font-weight: 800; color: #000; font-size: 22px; margin: 15px 0; font-style: italic; }
+        textarea { width: 100%; height: 120px; background: #f2f2f7; border: none; border-radius: 20px; padding: 15px; font-size: 16px; text-align: center; font-weight: 600; resize: none; }
+        textarea:focus { outline: none; }
+        .btn-kirim { background: #000; color: white; border: none; width: 100%; padding: 16px; border-radius: 40px; font-size: 16px; font-weight: bold; margin-top: 20px; cursor: pointer; }
+        .alert { background: #34C759; color: white; padding: 12px; border-radius: 15px; margin-bottom: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="avatar">🤫</div>
+            <div class="username">@tanya_saya</div>
+            <div class="prompt">kirimkan aku pesan anonim!</div>
+            
+            {% if sukses %}
+                <div class="alert">🔒 Pesan terkirim secara anonim!</div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                <textarea name="isi_pesan" placeholder="tulis sesuatu di sini..." required></textarea>
+                <button type="submit" class="btn-kirim">kirim!</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

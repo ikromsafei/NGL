@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGL - Inbox</title>
+    <style>
+        * { 
+            box-sizing: border-box; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        }
+        body { 
+            background-color: #0f141c; /* Warna gelap khas background NGL */
+            color: white; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            justify-content: center; 
+            min-height: 100vh;
+        }
+        .container { 
+            width: 100%; 
+            max-width: 410px; 
+            padding: 20px; 
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        /* Bagian Navigasi Atas PLAY | INBOX */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 10px;
+            margin-bottom: 40px;
+        }
+        .nav-item {
+            font-size: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #4a5660;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+        .nav-item.active {
+            color: #ffffff;
+            border-bottom: 3px solid #ffffff;
+            padding-bottom: 4px;
+        }
+        
+        /* List Item Pesan Masuk */
+        .list-inbox {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 100px; /* Jarak agar tidak tertutup tombol bawah */
+        }
+        .pesan-item {
+            display: flex;
+            align-items: center;
+            background-color: transparent;
+            text-decoration: none;
+            padding: 10px 5px;
+            border-bottom: 1px solid #1e2730;
+            transition: background 0.2s;
+        }
+        .pesan-item:active {
+            background-color: #1a222d;
+        }
+        
+        /* Ikon Amplop Bulat NGL */
+        .icon-box {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #ec1c4b 0%, #ff7b02 100%);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            margin-right: 15px;
+            box-shadow: 0 4px 12px rgba(236, 28, 75, 0.2);
+        }
+        /* Tampilan kalau pesan sudah dibaca */
+        .pesan-item.dibuka .icon-box {
+            background: #242f3d;
+            box-shadow: none;
+        }
+        
+        /* Teks Detail di Samping Amplop */
+        .meta-box {
+            flex-grow: 1;
+            text-align: left;
+        }
+        .title-text {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 3px;
+        }
+        .pesan-item.dibuka .title-text {
+            color: #8a9aa8;
+            font-weight: 500;
+        }
+        .time-text {
+            font-size: 13px;
+            color: #657786;
+        }
+        
+        /* Panah Kanan (Chevron) */
+        .arrow-right {
+            color: #4a5660;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Tombol Utama di Bagian Bawah */
+        .btn-footer {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 40px);
+            max-width: 370px;
+            background-color: #ea1d4c; /* Warna merah khas tombol NGL */
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(234, 29, 76, 0.3);
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn-footer:active {
+            transform: translateX(-50%) scale(0.98);
+        }
+        .kosong {
+            color: #4a5660;
+            font-weight: bold;
+            margin-top: 100px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-tabs">
+            <a href="{% url 'kirim_pesan' %}" class="nav-item">Play</a>
+            <a href="#" class="nav-item active">Inbox</a>
+        </div>
+
+        <div class="list-inbox">
+            {% for p in semua_pesan %}
+                <a href="{% url 'detail_pesan' p.pk %}" class="pesan-item {% if p.dibuka %}dibuka{% endif %}">
+                    <div class="icon-box">
+                        {% if p.dibuka %}📩{% else %}❤️{% endif %}
+                    </div>
+                    <div class="meta-box">
+                        <div class="title-text">
+                            {% if p.dibuka %}{{ p.isi_pesan|slice:":15" }}...{% else %}Hahaha{% endif %}
+                        </div>
+                        <div class="time-text">{{ p.waktu_dikirim|timesince }} yang lalu</div>
+                    </div>
+                    <div class="arrow-right">❯</div>
+                </a>
+            {% empty %}
+                <div class="kosong">Belum ada pesan masuk... 🤫</div>
+            {% endfor %}
+        </div>
+
+        {% if semua_pesan %}
+            <a href="#" class="btn-footer">Who sent these? 👀</a>
+        {% endif %}
+    </div>
+</body>
+</html>

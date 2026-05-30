@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGL - Detail Pesan</title>
+    <style>
+        * { 
+            box-sizing: border-box; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        }
+        body { 
+            background-color: #0f141c; 
+            color: white; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
+        .container { 
+            width: 100%; 
+            max-width: 400px; 
+            text-align: center; 
+        }
+        
+        /* Gelembung Pesan utama mirip NGL asli */
+        .bubble-pesan { 
+            background: linear-gradient(135deg, #ec1c4b 0%, #ff7b02 100%); 
+            border-radius: 30px; 
+            padding: 40px 25px; 
+            font-size: 22px; 
+            font-weight: 800; 
+            line-height: 1.4; 
+            box-shadow: 0 10px 25px rgba(236, 28, 75, 0.3); 
+            margin-bottom: 30px; 
+            word-wrap: break-word; 
+            text-align: center;
+            font-style: italic;
+        }
+
+        /* Card Intel / Data Pelacak khusus di bagian bawah */
+        .card-intel { 
+            background-color: #1a222d; 
+            border-radius: 20px; 
+            padding: 20px; 
+            text-align: left; 
+            border: 1px solid #242f3d; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .card-intel h3 { 
+            margin-top: 0; 
+            color: #ff3b30; 
+            font-size: 15px; 
+            font-weight: 800; 
+            border-bottom: 1px solid #242f3d; 
+            padding-bottom: 12px; 
+            letter-spacing: 0.5px;
+        }
+        .info-row { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 12px; 
+            font-size: 14px; 
+            align-items: center;
+        }
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+        .info-label { 
+            color: #8a9aa8; 
+            font-weight: 500; 
+        }
+        .info-value { 
+            color: #ffffff; 
+            font-weight: 700; 
+        }
+        
+        /* Tombol Kembali */
+        .btn-back { 
+            display: inline-block; 
+            margin-top: 25px; 
+            color: #657786; 
+            text-decoration: none; 
+            font-size: 14px; 
+            font-weight: 700; 
+            transition: color 0.2s;
+        }
+        .btn-back:hover {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="bubble-pesan">
+            “ {{ pesan.isi_pesan }} ”
+        </div>
+
+        <div class="card-intel">
+            <h3>📊 DATA PELACAK SOSMED & PENGIRIM</h3>
+            <div class="info-row">
+                <span class="info-label">🔗 Sumber Link:</span>
+                <span class="info-value" style="color: #ffcc00;">{{ pesan.asal_link }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">👤 Nama Akun (Jika Ada):</span>
+                <span class="info-value" style="color: #5ac8fa;">{{ pesan.nama_pelacak }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">🌐 IP Address:</span>
+                <span class="info-value">{{ pesan.ip_pengirim }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">⏰ Waktu Masuk:</span>
+                <span class="info-value">{{ pesan.waktu_dikirim|date:"d M Y - H:i" }} WIB</span>
+            </div>
+        </div>
+
+        <a href="{% url 'inbox_pesan' %}" class="btn-back">❮ Kembali ke Inbox</a>
+    </div>
+</body>
+</html>
